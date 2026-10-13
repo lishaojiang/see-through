@@ -38,14 +38,14 @@ class GDINO:
         for i, prompt in enumerate(texts_prompt):
             if prompt[-1] != ".":
                 texts_prompt[i] += "."
-        inputs = self.processor(images=images_pil, text=texts_prompt, return_tensors="pt").to(self.model.device)
+        inputs = self.processor(images=images_pil, text=texts_prompt, return_tensors="pt", padding=True, truncation=True).to(self.model.device)
         with torch.no_grad():
             outputs = self.model(**inputs)
 
         results = self.processor.post_process_grounded_object_detection(
             outputs,
             inputs.input_ids,
-            box_threshold=box_threshold,
+            threshold=box_threshold,
             text_threshold=text_threshold,
             target_sizes=[k.size[::-1] for k in images_pil],
         )
